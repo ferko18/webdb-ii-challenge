@@ -1,5 +1,5 @@
-const express = require('express');
-const helmet = require('helmet');
+const express = require("express");
+const helmet = require("helmet");
 const knex = require("knex");
 
 const knexConfig = {
@@ -17,12 +17,12 @@ server.use(express.json());
 server.use(helmet());
 
 // endpoints here
-//home endpoint 
+//home endpoint
 server.get("/", (req, res) => {
   res.send(`<h2>Working!</h2>`);
 });
 
-//get endpoint 
+//get endpoint
 server.get("/api/zoos", (req, res) => {
   db("zoos")
     .then(names => {
@@ -35,7 +35,7 @@ server.get("/api/zoos", (req, res) => {
     });
 });
 
-//post endpoint 
+//post endpoint
 server.post("/api/zoos", (req, res) => {
   const zoo = req.body;
 
@@ -65,7 +65,27 @@ server.post("/api/zoos", (req, res) => {
     });
 });
 
-
+//get by id endpoint 
+server.get("/api/zoos/:id", (req, res) => {
+  const id = req.params.id;
+  db("zoos")
+    .where({ id: id })
+    .first()
+    .then(name => {
+      if (!name) {
+        return res.status(404).json({
+          errorMessage: "the specified zoo does not exist"
+        });
+      } else {
+        res.status(200).json(name);
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: "error processing your request"
+      });
+    });
+});
 
 const port = 3300;
 server.listen(port, function() {
