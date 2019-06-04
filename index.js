@@ -86,7 +86,7 @@ server.get("/api/zoos/:id", (req, res) => {
       });
     });
 });
-
+//put endpoint 
 server.put("/api/zoos/:id", (req, res) => {
   const changes = req.body;
   const { id } = req.params;
@@ -113,6 +113,30 @@ server.put("/api/zoos/:id", (req, res) => {
       });
     });
 });
+
+//delete end point 
+
+server.delete('/api/zoos/:id', (req, res) => {
+  const {id} = req.params;
+
+  db('zoos')
+  .where({id})
+  .del()
+  .then(count => {
+    console.log(count)
+    if (count === 0) {
+      return res.status(404).json({message: 'the specified zoo does not exist'})
+    } else {
+      res.status(200).json({message: 'The zoo has been removed.'})
+    }
+  })
+  .catch(err => {
+    res.status(500).json({
+      error: 'error processing your request'
+    })
+  })
+
+})
 
 const port = 3300;
 server.listen(port, function() {
