@@ -87,6 +87,33 @@ server.get("/api/zoos/:id", (req, res) => {
     });
 });
 
+server.put("/api/zoos/:id", (req, res) => {
+  const changes = req.body;
+  const { id } = req.params;
+
+  if (!changes.name) {
+    return res.status(400).json({ errorMessage: "name not added, please add." });
+  }
+
+  db("zoos")
+    .where({ id: id })
+    .update(changes)
+    .then(count => {
+      if (count === 0) {
+        return res.status(404).json({
+          errorMessage: "the specified zoo does not exist"
+        });
+      } else {
+        res.status(200).json(count);
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: "error processing your request."
+      });
+    });
+});
+
 const port = 3300;
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`);
