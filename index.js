@@ -22,6 +22,19 @@ server.get("/", (req, res) => {
   res.send(`<h2>Working!</h2>`);
 });
 
+//get endpoint 
+server.get("/api/zoos", (req, res) => {
+  db("zoos")
+    .then(names => {
+      res.status(200).json(names);
+    })
+    .catch(error => {
+      res.status(500).json({
+        error: "Could not retrieve the data."
+      });
+    });
+});
+
 const port = 3300;
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`);
